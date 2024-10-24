@@ -7,6 +7,8 @@ import (
 	"os/exec"
 	"strings"
 	"syscall"
+
+	"github.com/SavingFrame/montainerd/internal/network"
 )
 
 func main() {
@@ -15,6 +17,8 @@ func main() {
 		run()
 	case "child":
 		child()
+	case "init":
+
 	default:
 		panic("wat shouild i do")
 	}
@@ -70,5 +74,14 @@ func child() {
 func must(err error) {
 	if err != nil {
 		panic(err)
+	}
+}
+
+func init() {
+	slog.Info("Initializing system")
+	bridge := network.NewBridge()
+	if err := bridge.Create(); err != nil {
+		slog.Error("Error creating bridge interface: ", slog.Any("error", err))
+		os.Exit(1)
 	}
 }
